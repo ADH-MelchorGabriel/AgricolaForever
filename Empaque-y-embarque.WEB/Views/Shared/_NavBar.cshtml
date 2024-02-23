@@ -1,0 +1,69 @@
+<nav class="navbar navbar-expand navbar-light navbar-bg">
+    <a class="sidebar-toggle js-sidebar-toggle" id="btnMenu">
+        <i class="hamburger align-self-center"></i>
+    </a>
+    <div class="navbar-collapse collapse">
+        <ul class="navbar-nav navbar-align">
+
+
+            <li class="nav-item dropdown">
+                <a class="nav-icon" asp-controller="AcarreoCampo" asp-action="index">
+                    <div class="position-relative">
+                        <i class="align-middle" data-feather="layers"></i>
+                        Acarreo
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-icon" asp-controller="Palet" asp-action="index">
+                    <div class="position-relative">
+                        <i class="align-middle" data-feather="package"></i>
+                        Palet
+                    </div>
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-icon" asp-controller="Embarques" asp-action="index">
+                    <div class="position-relative">
+                        <i class="align-middle" data-feather="truck"></i>
+                        Embarque
+                    </div>
+                </a>
+            </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-icon dropdown-toggle d-inline-block" href="#" data-bs-toggle="dropdown">
+                    <i class="align-middle" data-feather="file"></i>
+                    Reportes
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" asp-controller="Reportes" asp-action="Inventario">
+                        Inventario
+                    </a>
+                    <a class="dropdown-item" asp-controller="Reportes" asp-action="ReporteOrdenEnvio">
+                        Orden de envios
+                    </a>
+                    <a class="dropdown-item" asp-controller="Reportes" asp-action="ReporteProductosEmbarcados">
+                        Productos Embarcados
+                    </a>
+                    
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-icon dropdown-toggle d-inline-block" href="#" data-bs-toggle="dropdown">
+                    <i class="align-middle" data-feather="settings"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" asp-controller="Home" asp-action="LogOut">
+                        <i class="align-middle" data-feather="user"></i>
+                        Usuario
+                    </a>                
+                    <a class="dropdown-item" asp-controller="Home" asp-action="LogOut">
+                        <i class="align-middle" data-feather="x-circle"></i>
+                        Log out
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

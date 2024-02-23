@@ -1,0 +1,90 @@
+﻿
+<div id="app">
+	<div class="card mb-4 wow fadeIn">
+		<div class="card-header">
+			<div class="card-card-title">
+				<div class="row">
+					<h1 class="col-12 col-lg-3">Embarques</h1>
+					<div class="col-12 col-lg-9 text-right">
+						<a class="btn btn-primary btn-sm" v-bind:href="'Embarques/Nuevo/'"> <i class="align-middle" data-feather="plus"></i>Nuevo</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="card-body d-sm-flex justify-content-between">
+			<span v-if="cargando">
+				<img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+				Cargando informacion...
+			</span>
+
+			
+			<div class="row" style="overflow:auto; width:100%">
+				<table id="tbContenido" class="table" v-if="!cargando">
+					<thead>
+						<tr>
+							<th>
+								Manifiesto
+							</th>
+							<th>
+								Fecha
+							</th>
+							<th>
+								Cliente
+							</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr v-for="item in lista">
+
+							<td> {{item.manifiesto}}</td>
+							<td> {{item.fecha}}</td>
+							<td> {{item.cliente}}</td>
+							<td class="text-right">
+
+								<a class="btn btn-sm btn-warning" v-bind:href="'embarques/Nuevo?idEmbarque='+item.idEmbarque">Editar </a>
+								@*<a class="btn btn-sm btn-danger" v-on:click="borrar(item.idEmbarque)">Borrar </a>*@
+
+							</td>
+
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
+		</div>
+	</div>
+</div>
+
+@section Scripts{
+
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				lista:[],
+				cargando: false,
+			},
+			created: function () {
+				this.listar();
+			},
+			methods: {
+			
+				async listar()
+				{
+					var vm = this;
+					vm.cargando = true;
+					await axios
+						.get('Embarques/Listar')
+						.then(response => (vm.lista = response.data))
+						.catch(error => (console.log(error)))
+					vm.cargando = false;
+				}
+				
+			}
+		})
+				
+
+	</script>
+}

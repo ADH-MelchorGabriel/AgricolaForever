@@ -1,0 +1,83 @@
+﻿<div id="modalPaletCompleto" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Palet</h4>
+                <button type="button" class="close" data-dismiss="modal" @@click="cerrarmodalPaletCompleto">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label class="control-label">Empaque</label>
+                        <option value="0" selected v-if="empaques.length>1">selecciona una opción</option>
+                        <select v-model="paletCompleto.idEmpaque" class="form-control">
+                            <option v-for="item in empaques" v-bind:value="item.idEmpaque">
+                                {{item.nombre}}
+                            </option>
+                        </select>
+
+                    </div>
+                    
+
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label class="control-label">Agricultor</label>
+                        <option value="0" selected v-if="agricultores.length>1">selecciona una opción</option>
+                        <select v-model="paletCompleto.idAgricultor" class="form-control">          
+                            <option v-for="item in agricultores" v-bind:value="item.idAgricultor">
+                                {{item.nombre}}
+                            </option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-6">
+                        <label class="control-label">Lote</label>
+
+                        <select v-model="paletCompleto.idLote" class="form-control">
+                            <option value="0" selected>selecciona una opción</option>
+
+                            <option v-for="option in lote" v-bind:value="option.idLote">
+                                {{option.nombre}}
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-6">
+                        <label class="control-label">Producto</label>
+
+                        <select v-model="paletCompleto.idProducto" class="form-control" @@change="buscarProducto">
+                            <option value="0" selected>selecciona una opción</option>
+
+                            <option v-for="option in producto" v-bind:value="option.idProducto">
+                                {{option.nombre}}
+                            </option>
+                        </select>
+
+                    </div>
+                    <div class="form-group col-6">
+                        <label for="cantidad">Cantidad Cajas</label>
+                        <input v-model="paletCompleto.cantidad" type="text" placeholder="Cantidad" class="form-control" style="width:100%" />
+                    </div>
+
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+                <button v-if="paletCompleto.idPalet==0" type="button" class="btn btn-success" data-dismiss="modal" v-on:click="guardarCompleto">Guardar</button>
+                <button v-if="paletCompleto.idPalet!=0" type="button" class="btn btn-success" data-dismiss="modal" v-on:click="modificarCompleto">M Guardar</button>
+
+                <button  type="button" class="btn btn-secondary" data-dismiss="modal" @@click="cerrarmodalPaletCompleto">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

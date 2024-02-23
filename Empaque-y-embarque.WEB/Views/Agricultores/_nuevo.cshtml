@@ -1,0 +1,28 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agricultor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input v-model="obj.nombre" type="text" placeholder="Ej. Jesus Rene Medina" class="form-control" style="width:100%" />
+                </div>
+                <div class="form-group">
+                    <label for="codigo">Codigo</label>
+                    <input v-model="obj.codigo" type="text" placeholder="Codigo de 2 digitos" class="form-control" style="width:100%" maxlength="2" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

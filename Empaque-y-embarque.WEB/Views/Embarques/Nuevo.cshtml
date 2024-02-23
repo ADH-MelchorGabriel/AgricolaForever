@@ -1,0 +1,802 @@
+﻿
+<div id="app">
+    <div class="card mb-4 wow fadeIn">
+        <div class="card-header">
+            <div class="card-card-title">
+
+                <div class="row">
+                    <h1 class="col-12 col-md-2">Embarque</h1>
+                    <div class="col-12 col-md-10 text-right">
+                        <button class="btn btn-secondary btn-sm" v-if="embarque.idEmbarque!=0" v-on:click="abrirAddSellos" v-bind:disabled="embarque.estaTimbrado"> Sellos </button>
+                        <button class="btn btn-secondary btn-sm" v-if="embarque.idEmbarque!=0" v-on:click="facturar" v-bind:disabled="embarque.estaTimbrado"> Facturar </button>
+                        <button class="btn btn-secondary btn-sm" v-if="embarque.idEmbarque!=0" v-on:click="abrirDocumentos"> Documentos </button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="card-body ">
+            <div class="row">
+                <div class="col-12 col-md-5">
+                    <div class="row">
+                        <div class="form-group col-12 col-md-3">
+                            <label class="label-control">Manifiesto</label>
+                            <input v-model="embarque.manifiesto" class="form-control" disabled>
+                        </div>
+                        <div class="form-group col-12 col-md-3">
+                            <label class="control-label">Tipo </label>
+                            <select v-model="embarque.tipoEmbarque" class="form-control">
+                                <option v-for="option in tipoEmbarques" v-bind:value="option.value">
+                                    {{option.display}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-md-3">
+                            <label class="label-control">Caades</label>
+                            <input v-model="embarque.caades" placeholder="Ej: 68965" class="form-control">
+                        </div>
+                        <div class="form-group col-12 col-md-3">
+                            <label class="label-control">Temperatura</label>
+                            <input v-model="embarque.temperatura" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12 col-md-6 ">
+                            <label class="control-label ">Cliente</label>
+                            <select v-model="embarque.idCliente" class="form-control">
+                                <option value="0" selected v-if="clientes.length>1">selecciona una opción</option>
+                                <option v-for="option in clientes" v-bind:value="option.idCliente">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-md-6 ">
+                            <label class="control-label">Agencia aduanal</label>
+                            <select v-model="embarque.idAgenciaAduana" class="form-control">
+                                <option value="0" selected v-if="agenciasAduanales.length>1">selecciona una opción</option>
+                                <option v-for="option in agenciasAduanales" v-bind:value="option.idAgenciaAduana">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12 col-md-6 ">
+                            <label class="control-label">Linea de transporte</label>
+                            <select v-model="idLineaTransporte" class="form-control" v-on:change="changeLineaTransportes(idLineaTransporte)">
+                                <option value="0" selected v-if="lineasTransportes.length>1">selecciona una opción</option>
+                                <option v-for="option in lineasTransportes" v-bind:value="option.idLineaTransporte">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-md-6 ">
+                            <label class="control-label">Vehiculo</label>
+                            <select v-model="embarque.idVehiculo" class="form-control">
+                                <option value="0" selected>selecciona una opción</option>
+                                <option v-for="option in vehiculos" v-bind:value="option.idVehiculo">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-12 col-md-6">
+                            <label class="control-label">Remolque</label>
+                            <select v-model="embarque.idRemolque" class="form-control">
+                                <option value="0" selected>selecciona una opción</option>
+                                <option v-for="option in remolques" v-bind:value="option.idRemolque">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label class="control-label">Chofer</label>
+                            <select v-model="embarque.idChofer" class="form-control">
+                                <option value="0" selected>selecciona una opción</option>
+                                <option v-for="option in choferes" v-bind:value="option.idChofer">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label">Destino</label>
+                        <select v-model="embarque.idDestino" class="form-control">
+                            <option value="0" selected>selecciona una opción</option>
+                            <option v-for="option in destinos" v-bind:value="option.idDestino">
+                                {{option.nombre}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <a class="btn btn-secondary" asp-action="index">Regresar </a>
+                        <button class="btn btn-success text-white" v-on:click="guardar" v-bind:disabled="embarque.estaTimbrado">Guardar</button>
+                    </div>
+
+                </div>
+                <div class="col-12 col-md-7">
+
+                    <div class="row">
+                        <div class="col-6">Detalle de embarque</div>
+                        <div class="col-6 text-right">
+                            <button class="btn btn-sm btn-primary text-white" v-if="embarque.idEmbarque!=0" v-on:click="abrirAddPalet" v-bind:disabled="embarque.estaTimbrado">Agregar</button>
+                        </div>
+                    </div>
+
+
+                    <div class="table-responsive" style="overflow:auto; width:100%">
+                        <table class="table table-striped jambo_table bulk_action">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Posicion
+                                    </th>
+                                    <th>
+                                        Folio
+                                    </th>
+                                    <th>
+                                        Descripcion
+                                    </th>
+                                    <th>
+                                        Cantidad
+                                    </th>
+                                    <th>
+
+                                    </th>
+
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <template v-for="item in detalle">
+                                    <tr>
+                                        <td>{{item.posicion}}</td>
+                                        <td>{{item.folio}}</td>
+                                        <td>
+                                            <div v-for="item2 in item.productos">
+                                                {{item2.producto }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div v-for="item2 in item.productos">
+                                                {{item2.cantidad }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" v-on:click="borrarDetalle(item.idEmbarqueDetalle)" v-bind:disabled="embarque.estaTimbrado">
+                                                Borrar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+
+
+                            </tbody>
+
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <partial name="_addPalet" />
+    <partial name="_addSellos" />
+    <partial name="_documentacion" />
+    <partial name="_cargando" />
+</div>
+@section Scripts {
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                idLineaTransporte: 0,
+                embarque:
+                {
+                    idEmbarque: 0,
+                    manifiesto: 0,
+                    tipoEmbarque: 1,
+                    idCliente: 0,
+                    caades: "",
+                    idAgenciaAduana: 0,
+                    idUsuario: 0,
+                    idVehiculo: 0,
+                    idChofer: 0,
+                    idRemolque: 0,
+                    idDestino: 0,
+                    temperatura: 0,
+                    estaTimbrado: false
+                },
+                item: {
+                    idEmbarqueDetalle: 0,
+                    idPalet: 0,
+                    posicion: 0
+                },
+                sellos:
+                {
+                    selloPuesto: "",
+                    selloRepuesto: "",
+                },
+
+                pagos:
+                {
+                    idBanco: 0,
+                    fechaPago: null,
+                    importe: 0
+                },
+                detalle: [],
+                tipoEmbarques: [],
+                clientes: [],
+                agenciasAduanales: [],
+                lineasTransportes: [],
+                vehiculos: [],
+                choferes: [],
+                remolques: [],
+                destinos: [],
+                bancos: [],
+                palets: [],
+                cartaSellos:
+                {
+                },
+                cartaResponsiva:
+                {
+                },
+                guia:
+                {
+                },
+                manifiesto:
+                {
+                }
+            },
+            created: function () {
+
+                this.listarClientes();
+                this.listarBancos();
+                this.listarTipoEmbarque();
+                this.listarAgenciaAduanal();
+                this.listarLineasTransportes();
+                this.listarDestinos();
+                let queryString = window.location.search;
+                let urlParams = new URLSearchParams(queryString);
+                if (urlParams.has('idEmbarque')) {
+                    this.embarque.idEmbarque = urlParams.get('idEmbarque');
+                }
+                if (this.embarque.idEmbarque != 0) {
+                    this.buscar(this.embarque.idEmbarque);
+                    this.listarDetalle(this.embarque.idEmbarque);
+                }
+            },
+            methods: {
+                async buscar(id) {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/Buscar', { params: { id } })
+                        .then(response => (
+                            vm.embarque = response.data,
+                            vm.idLineaTransporte = response.data.idLineaTransporte,
+                            vm.changeLineaTransportes(response.data.idLineaTransporte),
+                            vm.embarque.idChofer = response.data.idChofer,
+                            vm.embarque.idVehiculo = response.data.idVehiculo,
+                            vm.embarque.idRemolque = response.data.idRemolque
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async buscarSellos(id) {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/BuscarSellos', { params: { id } })
+                        .then(response => (
+                            vm.sellos = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async listarTipoEmbarque() {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetTipoEmbarque')
+                        .then(response => (vm.tipoEmbarques = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async listarDetalle(id) {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/listarDetalle', { params: { id } })
+                        .then(response => (
+                            vm.detalle = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async guardar() {
+                    var vm = this;
+                    await axios
+                        .post('/Embarques/nuevo/Guardar', vm.embarque)
+                        .then(response => (
+                            vm.embarque = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async guardarDetalle(id) {
+                    var vm = this;
+                    await axios
+                        .post('/Embarques/nuevo/GuardarDetalle', vm.item, { params: { id } })
+                        .then(response => (
+                            vm.listarPalets(),
+                            vm.listarDetalle(id)
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async guardarSellos(id) {
+                    var vm = this;
+                    await axios
+                        .post('/Embarques/nuevo/GuardarSellos', vm.sellos, { params: { id } })
+                        .then()
+                        .catch(error => (console.log(error)))
+                },
+                async borrarDetalle(id) {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/BorrarDetalle', { params: { id } })
+                        .then(response => (
+                            vm.listarPalets(),
+                            vm.listarDetalle(vm.embarque.idEmbarque)
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async listarClientes() {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetClientes')
+                        .then(response => (vm.clientes = response.data))
+                        .catch(error => (console.log(error)))
+                    if (vm.clientes.length == 1) {
+                        vm.embarque.idCliente = vm.clientes[0].idCliente
+                    }
+                },
+                async listarAgenciaAduanal() {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetAgenciaAduanal')
+                        .then(response => (vm.agenciasAduanales = response.data))
+                        .catch(error => (console.log(error)))
+
+                    if (vm.agenciasAduanales.length == 1) {
+                        vm.embarque.idAgenciaAduana = vm.agenciasAduanales[0].idAgenciaAduana
+                    }
+                },
+                async listarBancos() {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetBancos')
+                        .then(response => (vm.bancos = response.data))
+                        .catch(error => (console.log(error)))
+                    if (vm.bancos.length == 1) {
+                        vm.pagos.idBanco = vm.bancos[0].idBanco
+                    }
+                },
+                async listarLineasTransportes() {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetLineasTransportes')
+                        .then(response => (vm.lineasTransportes = response.data))
+                        .catch(error => (console.log(error)))
+                    if (vm.lineasTransportes.length == 1) {
+                        vm.idLineaTransporte = vm.lineasTransportes[0].idLineaTransporte
+                    }
+                },
+                async listarVehiculos(id) {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetVehiculos', { params: { id } })
+                        .then(response => (vm.vehiculos = response.data))
+                        .catch(error => (console.log(error)))
+                    if (vm.vehiculos.length == 1) {
+                        vm.embarque.idVehiculo = vm.vehiculos[0].idVehiculo
+                    }
+                },
+                async listarRemolques(id) {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetRemolques', { params: { id } })
+                        .then(response => (vm.remolques = response.data))
+                        .catch(error => (console.log(error)))
+                    if (vm.remolques.length == 1) {
+                        vm.embarque.idRemolque = vm.remolques[0].idRemolque
+                    }
+                },
+                async listarChoferes(id) {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetChoferes', { params: { id } })
+                        .then(response => (vm.choferes = response.data))
+                        .catch(error => (console.log(error)))
+                    if (vm.choferes.length == 1) {
+                        vm.embarque.idChofer = vm.choferes[0].idChofer
+                    }
+                },
+                async listarDestinos() {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetDestinos')
+                        .then(response => (vm.destinos = response.data))
+                        .catch(error => (console.log(error)))
+                    if (vm.destinos.length == 1) {
+                        vm.embarque.idDestino = vm.destinos[0].idDestino
+                    }
+                },
+                async changeLineaTransportes(id) {
+                    this.listarVehiculos(id);
+                    this.listarRemolques(id);
+                    this.listarChoferes(id);
+                },
+                async listarPalets() {
+                    var vm = this;
+                    await axios
+                        .get('/Embarques/nuevo/GetPalets')
+                        .then(response => (vm.palets = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                abrirAddPalet() {
+                    this.listarPalets();
+                    $("#modalAddPalet").modal("show")
+                },
+                abrirAddSellos() {
+                    this.buscarSellos(this.embarque.idEmbarque);
+                    $("#modalAddSellos").modal("show")
+                },
+                abrirDocumentos() {
+                    $("#modalDocumentacion").modal("show")
+                },
+                cerrarAddPalet() {
+                    $("#modalAddPalet").modal("hide")
+                },
+                cerrarAddSellos() {
+                    $("#modalAddSellos").modal("hide")
+                },
+                cerrarDocumentos() {
+                    $("#modalDocumentacion").modal("hide")
+                },
+                async cartaSellosPDF() {
+
+                    vm = this;
+                    var id = vm.embarque.idEmbarque;
+                    await axios
+                        .get('/Embarques/nuevo/GetCartaSellos', { params: { id } })
+                        .then(response => (
+                            vm.cartaSellos = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+
+
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+
+                    doc.setFontSize(10);
+                    doc.text("FOREVER YOUNG FARMS", 40, 10);
+                    doc.text("FYF2010071IA", 40, 16);
+                    doc.text("Campo 5 Hermanos predio el Patagon, Bachimeto, Navolato, Sin, Mex, CP. 80330", 40, 22);
+                    doc.line(10, 25, 200, 25);
+                    doc.text("Carta de sellos del manifiesto " + vm.cartaSellos.manifiesto, 15, 30);
+                    doc.line(10, 33, 200, 33);
+
+                    doc.text("Instrucciones:", 15, 42)
+
+                    var text = "El jefe de trafico o embarques registrara en esta bitácora el numero de sellos para trailers (PAS ISO 17712) entregados al chófer que recibe orden de salida con destino a las instalaciones del cliente para cargar, liberar y transportar mercancía a los Estados Unidos de América.Esta bitácora permanece en posición del gerente de embarques.";
+                    doc.text(text, 15, 50, { align: 'justify', lineHeightFactor: 1.5, maxWidth: 180 });
+
+                    doc.text("Fecha : " + vm.cartaSellos.fecha, 15, 80);
+                    doc.text("Hora : " + vm.cartaSellos.hora, 15, 86);
+                    doc.text("Entregué 2 sellos al chofer antes de salir de la yarda :", 15, 92);
+                    doc.text("Camion   : " + vm.cartaSellos.camion, 15, 98);
+                    doc.text("Remolque : " + vm.cartaSellos.remolque, 15, 104);
+
+                    doc.text("Sello puesto  : " + vm.cartaSellos.selloPuesto, 15, 114);
+                    doc.text("Sello Repuesto: " + vm.cartaSellos.selloRepuesto, 15, 120);
+
+                    doc.line(20, 194, 85, 194);
+                    doc.text("" + vm.cartaSellos.chofer, 25, 200);
+
+
+
+                    doc.line(110, 194, 175, 194);
+                    doc.text("ENCARGADO DE EMBARQUES", 115, 200);
+
+
+                    doc.save('Carta Sellos -' + vm.embarque.manifiesto + '.pdf');
+                },
+                async cartaResponsivaPDF() {
+                    vm = this;
+                    var id = vm.embarque.idEmbarque;
+                    await axios
+                        .get('/Embarques/nuevo/GetCartaResponsiva', { params: { id } })
+                        .then(response => (
+                            vm.cartaResponsiva = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+
+
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+
+                    doc.setFontSize(10);
+                    doc.text("FOREVER YOUNG FARMS", 40, 10);
+                    doc.text("FYF2010071IA", 40, 16);
+                    doc.text("Campo 5 Hermanos predio el Patagon, Bachimeto, Navolato, Sin, Mex, CP. 80330", 40, 22);
+                    doc.line(10, 25, 200, 25);
+                    doc.text("Carta responsiva del manifiesto " + vm.cartaResponsiva.manifiesto, 15, 30);
+                    doc.line(10, 33, 200, 33);
+
+
+                    doc.text("Presente:", 15, 42)
+                    doc.text("Muy señores mios:", 15, 48)
+                    doc.text("El suscrito " + vm.cartaResponsiva.chofer, 15, 54)
+
+                    doc.text("Conductor del tracto camion marca " + vm.cartaResponsiva.camion + ", Modelo " + vm.cartaResponsiva.año + ", que arrastra la caja " + vm.cartaResponsiva.remolque + " propiedad de " + vm.cartaResponsiva.propietario + ".", 15, 64, { align: 'justify', lineHeightFactor: 1.5, maxWidth: 180 })
+                    doc.text("Hago Constar, que he recibido e inspeccionado la carga contenida en la caja refrigerada antes mencionada, la que contiene exclusivamente: ", 15, 80, { align: 'justify', lineHeightFactor: 1.5, maxWidth: 180 })
+
+                    var row = 90;
+
+
+
+                    vm.cartaResponsiva.detalle.forEach(function (item) {
+                        row += 6; doc.text(item.cantidad + " Cajas de " + item.producto, 15, row);
+                    });
+
+
+                    row += 10; doc.text("Las que serán entregadas conforme a la guia y manifiesto de embarque a:", 15, row);
+                    row += 6; doc.text("" + vm.cartaResponsiva.cliente, 15, row);
+                    row += 6; doc.text("" + vm.cartaResponsiva.direccion, 15, row);
+
+                    row += 12; doc.text("Consiente de que se me es prohibido transportar ningún tipo de carga diferente a la aquí señalada, por lo que los relevo de cualesquier responsabilidad en el evento de que se me encontrara otro tipo de carga en el tracto camión o en la caja refrigerada arrastrada por este.", 15, row, { align: 'justify', lineHeightFactor: 1.5, maxWidth: 180 })
+                    row += 16; doc.text("Sin otro particular me es grato reiterarles las seguridades de mis mas alta y distinguida consideración, suscribiéndome a sus ordenes para cualquier aclaración al respecto", 15, row, { align: 'justify', lineHeightFactor: 1.5, maxWidth: 180 })
+
+                    row += 14; doc.text("FOREVER YOUNG FARMS", 15, row);
+                    row += 6; doc.text("" + vm.cartaResponsiva.fecha, 15, row);
+                    row += 6; doc.text("MANIFIESTO DE EMBARQUE: " + vm.cartaResponsiva.manifiesto, 15, row);
+
+
+                    doc.line(20, 250, 85, 250);
+                    doc.text("" + vm.cartaResponsiva.chofer, 25, 254);
+
+
+
+                    doc.save('Carta Reponisva -' + vm.embarque.manifiesto + '.pdf');
+                },
+                async guiaPDF() {
+                    vm = this;
+                    var id = vm.embarque.idEmbarque;
+                    await axios
+                        .get('/Embarques/nuevo/GetGuia', { params: { id } })
+                        .then(response => (
+                            vm.guia = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    doc.setFontSize(9);
+
+                    doc.text(vm.guia.fecha, 166, 50);
+                    doc.text("FOREVER YOUNG FARMS", 16, 66);
+                    doc.text("Benito Juarez", 16, 76);
+                    doc.text("Navolato", 16, 85);
+                    doc.text("FYF2010071IA", 16, 94);
+                    doc.text("Navolato, Navolato, Sinaloa", 16, 102);
+                    doc.text("X", 50, 110);
+
+                    doc.text(vm.guia.cliente, 120, 66);
+                    doc.text(vm.guia.direccionCliente, 120, 76);
+                    doc.text(vm.guia.agenciaAduanal, 120, 85);
+                    doc.text(vm.guia.vehiculo, 120, 94);
+                    doc.text(vm.guia.placas, 120, 102);
+                    doc.text(vm.guia.remolque, 160, 102);
+                    doc.text(vm.guia.chofer, 120, 110);
+
+                    var row = 120
+                    var cantidad = 0;
+                    var toneladas = 0;
+                    vm.guia.detalle.forEach(function (item) {
+                        row += 9;
+                        doc.text(item.folioGuia, 8, row);
+                        doc.text(item.producto, 25, row);
+                        doc.text("" + item.cantidad, 138, row);
+                        doc.text("" + item.toneladas, 164, row);
+
+                        cantidad += item.cantidad;
+                        toneladas += item.toneladas;
+
+                    });
+
+
+                    doc.text("" + cantidad, 138, 235);
+                    doc.text("" + toneladas, 164, 235);
+
+                    doc.save('Guia -' + vm.embarque.manifiesto + '.pdf');
+                },
+                async facturar() {
+                    var vm = this;
+                    $("#cargando").modal('show');
+
+                    var id = vm.embarque.idEmbarque;
+
+                    axios
+                        .get("/Facturacion/facturar", { params: { id } })
+                        .then(response => (
+                            response.data.existeError == true ? toastr.error(response.data.mensaje) : toastr.success("Se a timbrado correctamente"),
+                            response.data.existeError == true ? vm.embarque.estaTimbrado = false : vm.embarque.estaTimbrado = true,
+                            $("#cargando").modal('hide')
+                        )).catch(function (error) {
+                            toastr.error(error),
+                                $("#cargando").modal('hide')
+                        })
+                },
+                async manifiestoPDF() {
+                    vm = this;
+                    var id = vm.embarque.idEmbarque;
+                    await axios
+                        .get('/Embarques/nuevo/GetManifiesto', { params: { id } })
+                        .then(response => (
+                            vm.manifiesto = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+
+
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+
+                    doc.setFontSize(10);
+                    doc.text("FOREVER YOUNG FARMS", 40, 10);
+                    doc.text("FYF2010071IA", 40, 16);
+                    doc.text("Campo 5 Hermanos predio el Patagon, Bachimeto, Navolato, Sin, Mex, CP. 80330", 40, 22);
+                    doc.line(10, 25, 200, 25);
+                    doc.text("Manifiesto " + vm.manifiesto.manifiesto + "   " + vm.manifiesto.fecha + "   " + vm.manifiesto.hora, 15, 30);
+                    doc.line(10, 33, 200, 33);
+                    doc.text("Cliente :" + vm.manifiesto.cliente, 15, 39);
+                    doc.text("Destino :" + vm.manifiesto.direccionCliente, 15, 45);
+                    doc.line(10, 47, 200, 47);
+
+
+
+                    let info = [];
+
+                    vm.manifiesto.detalle.forEach((element, index, array) => {
+                        info.push([element.producto, element.tamaño, element.calidadDescripcion, element.envase, element.cantidad, element.kilos, element.libras])
+
+                    }
+                    );
+
+                    var totalCantidad = vm.manifiesto.detalle.reduce((sum, el) => sum + el.cantidad, 0);
+                    var totalKilogramos = vm.manifiesto.detalle.reduce((sum, el) => sum + el.kilos, 0);
+                    var totalLibras = vm.manifiesto.detalle.reduce((sum, el) => sum + el.libras, 0);
+
+                    info.push(["", "", "", "", totalCantidad, totalKilogramos.toFixed(2), totalLibras])
+
+                    var row = 55;
+
+                    doc.autoTable(
+                        {
+                            head: [['Producto', 'Tamaño', 'Calidad', 'Envase', 'Cantidad', 'Kilogramos','Libras']],
+                            body: info,
+                            startY: row,
+                            columnStyles: { 4: { halign: "right" }, 5: { halign: "right" }, 6: { halign: "right" } },
+                        }
+                    );
+
+
+
+                    row += (13 * info.length); doc.text("Linea transporte :" + vm.manifiesto.propietario, 15, row);
+                    row += 6; doc.text("Chofer :" + vm.manifiesto.chofer, 15, row);
+                    row += 6; doc.text("Camion :" + vm.manifiesto.vehiculo + " Placas:" + vm.manifiesto.placas, 15, row);
+                    row += 6; doc.text("Remolque :" + vm.manifiesto.remolque + " Placas:" + vm.manifiesto.placasRemolque, 15, row);
+
+                    row += 6; doc.text("Sello puesto :" + vm.manifiesto.selloPuesto, 15, row);
+                    row += 6; doc.text("Sello de repuesto :" + vm.manifiesto.selloRepuesto, 15, row);
+                    row += 6; doc.text("Temperatura :" + vm.manifiesto.temperatura, 15, row);
+
+                    doc.save('Manifiesto -' + vm.embarque.manifiesto + '.pdf');
+                },
+                async manifiestoDetallado() {
+                    vm = this;
+                    var id = vm.embarque.idEmbarque;
+                    await axios
+                        .get('/Embarques/nuevo/GetManifiestoDetallado', { params: { id } })
+                        .then(response => (
+                            vm.manifiesto = response.data
+                        ))
+                        .catch(error => (console.log(error)))
+
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+
+
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+
+                    doc.setFontSize(10);
+                    doc.text("FOREVER YOUNG FARMS", 40, 10);
+                    doc.text("FYF2010071IA", 40, 16);
+                    doc.text("Campo 5 Hermanos predio el Patagon, Bachimeto, Navolato, Sin, Mex, CP. 80330", 40, 22);
+                    doc.line(10, 25, 200, 25);
+                    doc.text("Manifiesto detallado " + vm.manifiesto.manifiesto + "   " + vm.manifiesto.fecha + "   " + vm.manifiesto.hora, 15, 30);
+                    doc.line(10, 33, 200, 33);
+                    doc.text("Cliente :" + vm.manifiesto.cliente, 15, 39);
+                    doc.text("Destino :" + vm.manifiesto.direccionCliente, 15, 45);
+                    doc.line(10, 47, 200, 47);
+
+
+
+                    let info = [];
+
+                    vm.manifiesto.detalle.forEach((element, index, array) => {
+                        info.push([element.posicion, element.producto, element.agricultor, element.cantidad, element.kilogramos,element.libras])
+
+                    }
+                    );
+
+                    var totalCantidad = vm.manifiesto.detalle.reduce((sum, el) => sum + el.cantidad, 0);
+                    var totalKilogramos = vm.manifiesto.detalle.reduce((sum, el) => sum + el.kilogramos, 0);
+                     var totalLibras = vm.manifiesto.detalle.reduce((sum, el) => sum + el.libras, 0);
+
+                    info.push(["", "", "", totalCantidad, totalKilogramos.toFixed(2),totalLibras])
+
+                    var row = 50;
+
+                    doc.autoTable(
+                        {
+                            head: [['Posicion', 'Producto', 'Agricultor', 'Cantidad', 'Kilogramos','Libras']],
+                            body: info,
+                            startY: row,
+                            columnStyles: { 3: { halign: "right" }, 4: { halign: "right" }, 5: { halign: "right" } },
+                        }
+                    );
+
+                    doc.save('Manifiesto detallado -' + vm.embarque.manifiesto + '.pdf');
+                },
+                descargarpdf: function () {
+
+                    var id = this.embarque.idEmbarque;
+                    window.location = "/Facturacion/DownloadPDF?id=" + id
+
+                },
+                descargarxml: function () {
+                    var id = this.embarque.idEmbarque;
+                    window.location = "/Facturacion/DownloadXML?id=" + id
+                },
+            },
+            computed:
+            {
+            }
+        });
+    </script>
+    }
+
+

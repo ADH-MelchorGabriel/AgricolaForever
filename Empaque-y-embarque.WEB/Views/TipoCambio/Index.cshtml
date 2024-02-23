@@ -1,0 +1,121 @@
+﻿
+<div id="app">
+    <div class="card mb-4 wow fadeIn">
+
+        <div class="card-header">
+            <div class="card-card-title row">
+                <h1 class="col-12 col-lg-4">Tipos de cambio</h1>
+
+                <div class="col-12 col-lg-8 text-right">
+                    <button class="btn btn-success btn-sm" v-on:click="mostrarModalNuevo">Nuevo</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-body d-sm-flex justify-content-between">
+            <span v-if="cargando">
+                <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+                Cargando informacion...
+            </span>
+
+            <table id="tbContenido" class="table" v-if="!cargando">
+                <thead>
+                    <tr>
+                        <td>Fecha</td>
+                        <td>Valor</td>
+
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in lista">
+                        <td> {{item.fecha}}</td>
+                        <td>{{item.valor}}</td>
+                        <td class="text-right">
+
+
+
+                           @* <button class="btn btn-warning btn-sm" v-on:click="abrirModalModificar(item.idRol)">
+                                <i class="fas fa-edit mr-1"></i> Modificar
+                            </button>*@
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_nuevoModal" />
+
+</div>
+
+
+
+
+@section Scripts{
+
+    <script>
+       
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                obj:
+                {
+                    idTipoCambio: 0,
+                    fecha: null,
+                    valor: null
+                },
+                lista: [],
+                cargando:false
+
+            },
+            created: function () {
+                this.listar();
+            },
+            methods: {
+
+
+                async listar() {
+                    var vm = this;
+                    vm.cargando = true;
+                    await axios
+                        .get('tipoCambio/listar')
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+                    vm.cargando = false;
+                },
+
+                async guardar() {
+                    var vm = this;
+                    await axios
+                        .post('tipoCambio/Guardar', vm.obj)
+                        .then(response => (
+                            vm.listar(),
+                            vm.cerrarModalNuevo()
+
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+
+                mostrarModalNuevo: function () {
+                    $("#modalNuevo").modal('show');
+                },
+                cerrarModalNuevo: function () {
+                    $("#modalNuevo").modal('hide');
+                },
+
+            },
+            computed:
+            {
+
+
+            }
+        });
+    </script>
+}
+
+
+

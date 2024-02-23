@@ -1,0 +1,39 @@
+﻿
+<div class="modal" id="modalAddPago" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Pago de flete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarAddPago">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label class="control-label">Banco</label>
+                    <select v-model="pagoFlete.idBanco" class="form-control">
+                        <option value="0" selected>selecciona una opción</option>
+                        <option v-for="option in bancos" v-bind:value="option.idChofer">
+                            {{option.nombre}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="label-control">Fecha</label>
+                    <input v-model="pagoFlete.fechaPago" type="date" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="label-control">Importe</label>
+                    <input v-model="pagoFlete.importe" type="date" class="form-control">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" v-on:click="guardarPago(embarque.idEmbarque)">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarAddPago">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

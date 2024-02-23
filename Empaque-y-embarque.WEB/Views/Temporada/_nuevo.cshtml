@@ -1,0 +1,37 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Lote</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+              
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="codigo">Fecha Inicio</label>
+                        <input v-model="obj.fechaInicio" type="date" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="codigo">Fecha Final</label>
+                        <input v-model="obj.fechaFinal" type="date" class="form-control" style="width:100%" />
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="descripcion">Descripcion</label>
+                    <textarea v-model="obj.descripcion" type="" class="form-control" style="width:100%" placeholder="Descripcion"></textarea>
+                </div>
+                   
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

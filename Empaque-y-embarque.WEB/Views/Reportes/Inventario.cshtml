@@ -1,0 +1,182 @@
+﻿
+<div id="app">
+    <div class="card mb-4 wow fadeIn">
+        <div class="card-header">
+            <div class="card-card-title">
+                <div class="row">
+                    <h1 class="col-12 col-lg-3">Inventario de palets</h1>
+                    <div class="col-12 col-lg-9 text-right">
+
+                        <button class="btn btn-secondary btn-sm" v-on:click="generarExcel">
+
+                            Excel
+                        </button>
+                        <button class="btn btn-secondary btn-sm" v-on:click="generarPDF">
+
+                            PDF
+                        </button>
+                       @* <button class="btn btn-secondary btn-sm" v-on:click="abrirFiltro">
+                            <i class="align-middle" data-feather="filter"></i>
+                            Filtro
+                        </button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body d-sm-flex justify-content-between">
+            <span v-if="cargando">
+                <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+                Cargando informacion...
+            </span>
+
+
+            <div class="row" style="overflow:auto; width:100%">
+                <table id="tbContenido" class="table" v-if="!cargando">
+                    <thead>
+                        <tr>
+                            <th>
+                                Fecha
+                            </th>
+                            <th>
+                                Folio
+                            </th>
+                            <th>
+                                Producto
+                            </th>
+                            <th>
+                                Agricultor
+                            </th>
+                            <th>
+                                Cajas
+                            </th>    
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in lista">
+                            <td>
+                                {{item.fecha}}
+                            </td>
+                            <td>
+                                {{item.folio}}
+                            </td>
+                            <td>
+                                {{item.producto}}
+                            </td>
+                            <td>
+                                {{item.agricultor}}
+                            </td>
+                            <td class="text-right">
+                                {{item.cajas}}
+                            </td>
+                           
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                lista: [],
+                cargando: false,
+               
+            },
+            created: function () {
+                this.cargar();
+            },
+            methods: {
+
+                async cargar() {
+                    var vm = this;
+                    vm.cargando = true;              
+                    await axios
+                        .get('getInventario')
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+
+                    vm.cargando = false;
+                },
+                async generarPDF() {
+                    vm = this;
+
+                    await axios
+                        .get('getInventario')
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+
+
+                    doc.setFontSize(10);
+                    doc.text("FOREVER YOUNG FARMS", 40, 10);
+                    doc.text("FYF2010071IA", 40, 16);
+                    doc.text("DE LA CONCORDIA no 2638, Culiacan de Rosales, Culiacan, Sin, Mex, CP. 80054", 40, 22);
+                    doc.line(10, 25, 200, 25);
+                    doc.text("Inventario ", 15, 30);
+                    doc.line(10, 33, 200, 33);
+
+
+
+                    let info = [];
+
+                    vm.lista.forEach((element, index, array) => {
+                        info.push([element.fecha, element.folio, element.producto, element.agricultor, element.cajas])
+
+                    }
+                    );
+
+                   
+                    var total = vm.lista.reduce((sum, el) => sum + el.cajas, 0);
+
+                    info.push(["", "", "", "", total])
+
+                    var row = 40;
+
+                    doc.autoTable(
+                        {
+                            head: [['Fecha', 'Folio', 'Producto', 'Agricultor', 'Cajas']],
+                            body: info,
+                            startY: row,
+                            columnStyles: { 4: { halign: "right" } },
+                        }
+                    );
+
+                    doc.save("Inventario.pdf");
+                },
+                generarExcel() {
+                    $("#tbContenido").table2excel({
+                        exclude: ".noExl",
+                        name: "Worksheet Name",
+                        filename: "Inventario",
+                        fileext: ".xls"
+                    });
+                },
+                abrirFiltro() {
+                    $("#modalFiltro").modal("show");
+                },
+                cerrarFiltro() {
+                    $("#modalFiltro").modal("hide");
+                }
+
+            }
+        })
+
+
+    </script>
+}

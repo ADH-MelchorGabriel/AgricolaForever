@@ -1,0 +1,45 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Linea Transporte</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class=" form-group col-lg-12">
+                        <label class="label-control">Linea Transporte</label>
+                        <select v-model="obj.idLineaTransporte" class="form-control">
+                            <option value="0" selected>selecciona una opción</option>
+
+                            <option v-for="option in lineaTransporte"  v-bind:value="option.idLineaTransporte">
+                                {{option.nombre}}
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="form-group col-lg-6">
+                        <label for="nombre">Nombre</label>
+                        <input v-model="obj.nombre" type="text" placeholder="Ej. Jesus Rene Medina" class="form-control" style="width:100%" />
+                    </div>
+                    <div class="form-group col-lg-6">
+                        <label for="telefono">Telefono</label>
+                        <input v-model="obj.telefono" type="text" class="form-control" placeholder="Ej. 6721219378" style="width:100%" />
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

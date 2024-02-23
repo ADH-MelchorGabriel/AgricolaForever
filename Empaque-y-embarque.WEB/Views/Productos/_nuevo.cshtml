@@ -1,0 +1,141 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+
+                    <div class="row">
+
+
+                        <div class="col-12 col-lg-4">
+                            <div class="form-group">
+                                <label class="label-control">Codigo</label>
+                                <input v-model="obj.codigo" maxlength="5" placeholder="codigo a 5 caracteres" class="form-control text-right">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-lg-8">
+                            <label class="label-control">Nombre</label>
+                            <input v-model="obj.nombre" placeholder="Ej.Berenjena china mediana primera caja de carton" class="form-control">
+                        </div>
+
+
+                    </div>
+                    <div class="row">
+
+                        <div class="form-group col-lg-4">
+                            <label class="label-control ">Cultivo</label>
+                            <select v-model="obj.idCultivo" placeholder="selecciona una opción" class="form-control">
+                                <option value="0" selected>selecciona una opción</option>
+
+                                <option v-for="option in cultivo" v-bind:value="option.idCultivo">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="form-group col-lg-4">
+                            <label class="label-control ">Tamaño</label>
+                            <select v-model="obj.idTamaño" placeholder="selecciona una opción" class="form-control">
+                                <option value="0" selected>selecciona una opción</option>
+
+                                <option v-for="option in tamaño" v-bind:value="option.idTamaño">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class=" form-group col-lg-4">
+                            <label class="label-control">Envase</label>
+                            <select v-model="obj.idEnvase" class="form-control">
+                                <option value="0" selected>selecciona una opción</option>
+                                <option v-for="option in envase" v-bind:value="option.idEnvase">
+                                    {{option.nombre}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group col-lg-3">
+                        <label class="label-control ">Calidad</label>
+                        <select v-model="obj.calidad" placeholder="selecciona una opción" class="form-control">
+                            <option value="-1" selected>selecciona una opción</option>
+
+                            <option v-for="option in tipoCalidad" v-bind:value="option.value">
+                                {{option.display}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-lg-3 ">
+                        <div class="form-group">
+                            <label class="label-control">Libras</label>
+                            <input v-model="obj.libras" class="form-control text-right" v-on:change="calcularKg">
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3 ">
+                        <div class="form-group">
+                            <label class="label-control">Peso KG</label>
+                            <input v-model="obj.pesoKg" class="form-control text-right" disabled>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3 ">
+                        <div class="form-group">
+                            <label class="label-control">Cantidad</label>
+                            <input v-model="obj.cantidad" class="form-control text-right">
+                        </div>
+                    </div>
+                    
+                </div>
+                @*<div class="row">
+                <div class="col-12 col-lg-4 ">
+                <div class="form-group">
+                <label class="label-control">Cve Fraccion Arancelaria</label>
+                <input v-model="obj.cveFraccionArancelaria" maxlength="10" placeholder="fracción a maximo 10 digitos" class="form-control text-right">
+                </div>
+                </div>
+                <div class="col-12 col-lg-4 ">
+                <div class="form-group">
+                <label class="label-control">Cve Unidad Medida</label>
+                <input v-model="obj.cveUnidadMedida" maxlength="3" placeholder="clave a 3 caracteres" class="form-control text-right">
+                </div>
+                </div>
+                <div class="col-12 col-lg-4 ">
+                <div class="form-group">
+                <label class="label-control">Cve Producto Servicio</label>
+                <input v-model="obj.cveProductoServicio" maxlength="8" placeholder="clave a 8 caracteres" class="form-control text-right">
+                </div>
+                </div>
+                </div>*@
+                <div class="row">
+
+
+                    @*<div class="col-12 col-lg-6">
+                    <div class="form-group">
+                    <label class="label-control">Folio Guia</label>
+                    <input v-model="obj.folioGuia" maxlength="6" placeholder="folio a 6 caracteres" class="form-control text-right">
+                    </div>
+                    </div>*@
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+            </div>
+
+        </div>
+
+
+
+    </div>
+
+</div>
+

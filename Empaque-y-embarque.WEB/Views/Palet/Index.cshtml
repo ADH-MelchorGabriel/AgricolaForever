@@ -1,0 +1,293 @@
+﻿
+<div id="app">
+    <div class="card mb-4 wow fadeIn">
+        <div class="card-header">
+            <div class="card-card-title">
+
+                <div class="row">
+                    <h1 class="col-12 col-lg-3">Palet</h1>
+                    <div class="col-12 col-lg-9 text-right">
+                        <a class="btn btn-primary btn-sm" @@click="abrirPaletCompleto"> <i class="align-middle" data-feather="plus"></i>Nuevo</a>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body d-sm-flex justify-content-between">
+            <span v-if="cargando">
+                <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+                Cargando informacion...
+            </span>
+
+            <table id="tbContenido" class="table" v-if="!cargando">
+                <thead>
+                    <tr>
+                        <th>
+                            Folio
+                        </th>
+                        <th>
+                            Fecha
+                        </th>
+                        <th>
+                            Tipo
+                        </th>
+                        <th>
+                            Agricultor
+                        </th>
+                        <th>
+                            Productos
+                        </th>
+                        <th>Cajas</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in lista">
+                        <td> {{item.folio}}</td>
+                        <td> {{item.fecha}}</td>
+                        <td> {{item.tipoPalet}}</td>
+                        <td>
+                            <template v-for="item2 in item.detalle">
+                                {{item2.agricultor}}
+                            </template>
+                        </td>
+                        <td>
+                            <template v-for="item2 in item.detalle">
+                                {{item2.producto}}
+                            </template>
+                        </td>
+                        <td>
+                            <template v-for="item2 in item.detalle">
+                                {{item2.cantidad}}
+                            </template>
+                        </td>
+                        <td class="text-right">
+
+
+
+
+                            <button class="btn btn-info btn-sm" v-on:click="imprimirPallet(item.idPalet)">
+                                <i class="fas fa-edit mr-1"></i> Imprimir
+                            </button>
+                            <button class="btn btn-warning btn-sm" v-on:click="abrirModalModificar()">
+                                <i class="fas fa-edit mr-1"></i> Modificar
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" v-on:click="borrarPallet(item.idPalet)">
+                                <i class="fas fa-edit mr-1"></i> Borrar
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <partial name="_PaletCompleto" />
+
+</div>
+
+@section Scripts{
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                cargando: false,
+                lista: [],
+                cantidadFolios: 1,
+                paletCompleto:
+                {
+                    idPalet: 0,
+                    idEmpaque: 0,
+                    idPaletDetalle: 0,
+                    idTemporada: 0,
+                    esGaseado: false,
+                    esPaletChep: false,
+                    idAgricultor: 0,
+                    idLote: 0,
+                    idProducto: 0,
+                    cantidad: 0,
+                },
+                agricultores: [],
+                lote: [],
+                producto: [],
+                empaques: [],
+                imprimir: null,
+            },
+
+
+            created: function () {
+                this.listar();
+                this.listarAgricultor();
+                this.listarLote();
+                this.listarProducto();
+                this.listarEmpaques();
+            },
+            methods: {
+                async listar() {
+                    var vm = this;
+                    vm.cargando = true;
+                    await axios
+                        .get('palet/listar')
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+                    vm.cargando = false;
+                },
+
+                async buscarProducto() {
+                    var vm = this.paletCompleto;
+                    var id = vm.idProducto;
+                    await axios
+                        .get('palet/buscarProducto', { params: { id } })
+                        .then(response => (vm.cantidad = response.data.cantidad))
+                        .catch(error => (console.log(error)))
+                },
+                async modificarCompleto() {
+                    var vm = this;
+
+
+                    await axios
+                        .post('palet/GuardarPaletCompleto', vm.paletCompleto)
+                        .then(response => (
+                            this.listar()
+                        ))
+                        .catch(error => (console.log(error)))
+
+
+
+                },
+                async borrarPallet(id) {
+                    await axios
+                        .get('palet/BorrarPallet', { params: { id } })
+                        .then(response => (
+                            this.listar()
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async guardarCompleto() {
+                    var vm = this;
+
+                    var id = 0;
+                    await axios
+                        .post('palet/GuardarPaletCompleto', vm.paletCompleto)
+                        .then(response => (
+                            this.listar(),
+                            id = response.data.idPalet
+                        ))
+                        .catch(error => (console.log(error)))
+
+
+                    this.imprimirPallet(id);
+                    this.cerrarmodalPaletCompleto();
+
+                },
+                async buscarPalet(id) {
+                    var vm = this;
+
+                    await axios
+                        .get('palet/buscarPaletCompleto', { params: { id } })
+                        .then(response => (vm.paletCompleto = response.data))
+                        .catch(error => (console.log(error)))
+                },
+
+
+
+                async listarAgricultor() {
+                    var vm = this;
+                    await axios
+                        .get('palet/GetAgricultor')
+                        .then(response => (vm.agricultores = response.data))
+                        .catch(error => (console.log(error)))
+
+                    if (vm.agricultores.length == 1) {
+                        vm.paletCompleto.idAgricultor = vm.agricultores[0].idAgricultor
+                    }
+
+                },
+                async listarLote() {
+                    var vm = this;
+                    await axios
+                        .get('palet/GetLote')
+                        .then(response => (vm.lote = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async listarProducto() {
+                    var vm = this;
+                    await axios
+                        .get('palet/GetProducto')
+                        .then(response => (vm.producto = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async listarEmpaques() {
+                    var vm = this;
+                    await axios
+                        .get('palet/GetEmpaques')
+                        .then(response => (vm.empaques = response.data))
+                        .catch(error => (console.log(error)))
+
+                    if (vm.empaques.length == 1) {
+                        vm.paletCompleto.idEmpaque = vm.empaques[0].idEmpaque
+                    }
+                },
+
+                async imprimirPallet(id) {
+                    var vm = this;
+                    await axios
+                        .get('palet/PaletImprimir/', { params: { id } })
+                        .then(response => (vm.imprimir = response.data))
+                        .catch(error => (console.log(error)))
+
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+
+                    doc.setFontSize(18);
+                    doc.text("FOREVER YOUNG FARMS", 40, 13);
+
+                    doc.setFontSize(18);
+                    doc.text("Folio : " + vm.imprimir.folio, 40, 22);
+
+                    doc.setFontSize(18);
+                    doc.text(vm.imprimir.producto, 10, 32);
+
+                    doc.setFontSize(18);
+                    doc.text(vm.imprimir.agricultor, 10, 42);
+
+                    doc.setFontSize(18);
+                    doc.text('Cajas : ' + vm.imprimir.cantidad, 10, 52);
+
+                    doc.line(10, 60, 200, 60);
+                    doc.autoPrint();
+
+                    doc.output('dataurlnewwindow', {
+                        filename: 'Palet -' + vm.imprimir.folio + '.pdf'
+                    });
+
+                },
+
+                abrirPaletCompleto() {
+                    $("#modalPaletCompleto").modal("show");
+                },
+                async abrirModalModificar(id) {
+                    await this.buscarPalet(id);
+
+                    $("#modalPaletCompleto").modal("show");
+                },
+                cerrarmodalPaletCompleto() {
+
+                    $("#modalPaletCompleto").modal("hide");
+                }
+
+            },
+        });
+    </script>
+
+}

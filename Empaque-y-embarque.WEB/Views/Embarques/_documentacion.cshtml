@@ -1,0 +1,29 @@
+﻿
+<div class="modal" id="modalDocumentacion" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Documentacion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarDocumentos">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-info" type="button" v-on:click="descargarxml">Factura xml</button>
+                    <button class="btn btn-info" type="button" v-on:click="descargarpdf">Factura pdf</button>
+                    <button class="btn btn-info" type="button" v-on:click="cartaSellosPDF">Carta sellos</button>
+                    <button class="btn btn-info" type="button" v-on:click="cartaResponsivaPDF">Carta responsiva</button>
+                    @* <button class="btn btn-info" type="button" v-on:click="guiaPDF">Guia</button> *@
+                    <button class="btn btn-info" type="button" v-on:click="manifiestoDetallado">Manifiesto detallado</button>
+                    <button class="btn btn-info" type="button" v-on:click="manifiestoPDF">Manifiesto</button>
+                </div>
+              
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarDocumentos">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+

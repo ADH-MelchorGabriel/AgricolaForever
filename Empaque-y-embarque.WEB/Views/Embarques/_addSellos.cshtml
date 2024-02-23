@@ -1,0 +1,30 @@
+﻿
+<div class="modal" id="modalAddSellos" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar sellos</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarAddSellos">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">              
+                <div class="row">
+                    <div class="form-group col-12 col-md-6">
+                        <label class="control-label">Sello puesto</label>
+                        <input  v-model="sellos.selloPuesto" class="form-control" />
+                    </div>
+                    <div class="form-group col-12 col-md-6">
+                        <label class="control-label">Sello repuesto</label>
+                        <input  v-model="sellos.selloRepuesto" class="form-control" />
+                    </div>
+                </div>
+              
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" v-on:click="guardarSellos(embarque.idEmbarque)">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarAddSellos">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

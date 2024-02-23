@@ -1,0 +1,38 @@
+﻿<div class="modal fade" id="modalNuevo">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Tipo de cambio</h4>
+                <button type="button" class="close" data-dismiss="modal" v-on:click="cerrarModalNuevo">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label class="label-control">Fecha</label>
+                    <input v-model="obj.fecha" type="date" class="form-control">
+
+                </div>
+
+                <div class="form-group">
+                    <label class="label-control">Tipo de cambio</label>
+                    <input v-model="obj.valor" type="number" class="form-control">
+                   
+                </div>
+
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+
+                <a href="https://www.banxico.org.mx/tipcamb/tipCamMIAction.do?idioma=sp" target="_blank" >SIE - Mercado cambiario</a>
+                <button type="button" class="btn btn-success" data-dismiss="modal" v-on:click="guardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

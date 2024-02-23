@@ -1,0 +1,180 @@
+﻿<div id="app">
+    <div class="card mb-4 wow fadeIn">
+
+        <div class="card-header">
+            <div class="card-card-title row">
+                <h1 class="col-12 col-lg-2">Acarreo de campo</h1>
+
+                <div class="col-12 col-lg-10 text-right">
+                    <button class="btn btn-success btn-sm" v-on:click="abrirModalNuevo">Nuevo</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-body d-sm-flex justify-content-between">
+            <span v-if="cargando">
+                <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+                Cargando informacion...
+            </span>
+
+            <table id="tbContenido" class="table" v-if="!cargando">
+                <thead>
+                    <tr>
+                        <th>
+                            Folio
+                        </th>
+                        <th>
+                            Fecha
+                        </th>
+                        <th>
+                            Lote
+                        </th>
+                        <th>
+                            Cultivo
+                        </th>
+                        <th>
+                            Cajas
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in lista">
+                        <td> {{item.folio}}</td>
+                        <td> {{item.fecha}}</td>
+                        <td> {{item.lote}}</td>
+                        <td> {{item.cultivo}}</td>
+                        <td> {{item.cajas}}</td>
+                        <td class="text-right">
+
+                            <button class="btn btn-danger btn-sm" v-on:click="cancelar(item.idAcarreoCampo)">
+                                <i class="fa fa-times mr-1"></i> Cancelar
+                            </button>
+
+                            <button class="btn btn-warning btn-sm" v-on:click="abrirModalModificar(item.idAcarreoCampo)">
+                                <i class="fas fa-edit mr-1"></i> Modificar
+                            </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_nuevo" />
+
+</div>
+
+@section Scripts{
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                cargando: false,
+                lista: [],
+                obj: {
+                    idAcarreoCampo: 0,
+                    folio: "",
+                    fecha: null,
+                    idLote: 0,
+                    idCultivo: 0,
+                    mayordomo: "",
+                    chofer: "",
+                    placasVehiculo: "",
+                    placasRemolque: "",
+                    cajas: 0,
+                    kilogramos: 0,
+                },
+                lotes: [],
+                cultivos: [],
+            },
+            created: function () {
+                this.listar();
+                this.listarLotes();
+                this.listarCultivos();
+
+            },
+            methods: {
+                async listar() {
+                    var vm = this;
+                    vm.cargando = true;
+                    await axios
+                        .get('AcarreoCampo/listar')
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+                    vm.cargando = false;
+                },
+                async listarLotes() {
+                    var vm = this;
+
+                    await axios
+                        .get('AcarreoCampo/GetLote')
+                        .then(response => (vm.lotes = response.data))
+                        .catch(error => (console.log(error)))
+
+                },
+                async listarCultivos() {
+                    var vm = this;
+
+                    await axios
+                        .get('AcarreoCampo/GetCultivo')
+                        .then(response => (vm.cultivos = response.data))
+                        .catch(error => (console.log(error)))
+
+                },
+                async buscar(id) {
+                    var vm = this;
+                    await axios
+                        .get('AcarreoCampo/buscar', { params: { id } })
+                        .then(response => (vm.obj = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async guardar() {
+                    var vm = this;
+                    await axios
+                        .post('AcarreoCampo/guardar', vm.obj)
+                        .then(response => (
+                            vm.listar(),
+                            vm.cerrarModalNuevo()
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async cancelar(id) {
+                    var vm = this;
+                    await axios
+                        .get('AcarreoCampo/cancelar', { params: { id } })
+                        .then(response => (vm.listar()))
+                        .catch(error => (console.log(error)))
+                },
+                limpiar() {
+                    vm = this;
+                    this.obj.idAcarroCampo = 0;
+                    this.obj.folio = "";
+                    this.obj.fecha = null;
+                    this.obj.idLote = 0;
+                    this.obj.idCultivo = 0;
+                    this.obj.mayordomo = "";
+                    this.obj.chofer = "";
+                    this.obj.placasVehiculo = "";
+                    this.obj.placasRemolque = "";
+                    this.obj.cajas = 0;
+                    this.obj.kilogramos = 0;
+                },
+                abrirModalModificar(id) {
+                    var vm = this;
+                    vm.buscar(id);
+                    $("#modalNuevo").modal("show");
+                },
+                abrirModalNuevo() {
+                    this.limpiar();
+                    $("#modalNuevo").modal("show");
+                },
+                cerrarModalNuevo() {
+                    $("#modalNuevo").modal("hide");
+                },
+            },
+        });
+    </script>
+}

@@ -1,0 +1,47 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Roles de Usuarios</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+
+                    <div class=" form-group col-lg-12">
+                        <label for="rol">Rol</label>
+                        <label class="label-control"></label>
+                        <select v-model="obj.idRol" class="form-control">
+                            <option value="0" selected>selecciona una opción</option>
+
+                            <option v-for="option in roles"  v-bind:value="option.idRol">
+                                {{option.nombre}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class=" form-group col-lg-12">
+                        <label for="usuario">Usuarios</label>
+                        <label class="label-control"></label>
+                        <select v-model="obj.idUsuario" class="form-control">
+                            <option value="0" selected>selecciona una opción</option>
+
+                            <option v-for="option in usuarios" v-bind:value="option.idUsuario">
+                                {{option.nombre}}
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+              
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>

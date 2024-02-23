@@ -1,0 +1,51 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Vehiculo</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+
+					<div class=" form-group col-lg-12">
+						<label class="label-control">Linea Transporte</label>
+						<select v-model="obj.idLineaTransporte" class="form-control">
+							<option value="0" selected>selecciona una opción</option>
+
+							<option v-for="option in lineaTransporte" v-bind:value="option.idLineaTransporte">
+								{{option.nombre}}
+							</option>
+						</select>
+					</div>
+
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-4">
+						<label for="placas">Placas</label>
+						<input v-model="obj.placas" type="text" class="form-control" placeholder="Ej. VRH333C" uppercase maxlength="7" style="width:100%" />
+					</div>
+					<div class="form-group col-lg-4">
+						<label for="año">Año</label>
+						<input v-model="obj.año" type="text" class="form-control"  placeholder="Ej. 2023" maxlength ="4" style="width:100%" />
+					</div>
+					<div class="form-group col-lg-4">
+						<label for="año">Apodo</label>
+						<input v-model="obj.apodo" type="text" class="form-control"  style="width:100%" />
+					</div>
+				</div>
+
+				<div class="form-group">
+					<textarea v-model="obj.descripcion" type="" class="form-control" style="width:100%" placeholder="Descripcion"></textarea>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>

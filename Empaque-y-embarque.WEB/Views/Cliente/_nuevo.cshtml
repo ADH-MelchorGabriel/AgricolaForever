@@ -1,0 +1,64 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Cliente</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body ">
+				<div class="row">
+					<div class="form-group col-lg-12">
+						<label for="nombre">Nombre</label>
+						<input v-model="obj.nombre" type="text" placeholder="Ej. Jesús René Medina" class="form-control" style="width:100%" />
+					</div>
+					
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-6">
+						<label for="rfc">RFC</label>
+						<input id="rfc" oninput="convertirAMayusculas(this)" v-model="obj.rfc" type="text" placeholder="Ej.MESJHSLDSKLX0" maxlength="13" class="form-control" style="width:100%" />
+					</div>
+					<div class="form-group col-lg-6">
+						<label for="codigo">Codigo</label>
+						<input v-model="obj.codigo" type="text" placeholder="Máximo 5 caracteres" maxlength="5" class="form-control" style="width:100%" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-6">
+						<label for="recidenciaFiscal">Recidencia Fiscal</label>
+						<input v-model="obj.recidenciaFiscal" type="text"  class="form-control" style="width:100%" />
+					</div>
+					<div class="form-group col-lg-6">
+						<label for="regimenFiscal">Regimen Fiscal</label>
+						<input v-model="obj.regimenFiscal" type="text" class="form-control" style="width:100%" />
+					</div>
+					
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-6">
+						<label for="numRegIdTrib">Num Reg ID Trib</label>
+						<input v-model="obj.numRegIdTrib" type="text" class="form-control" style="width:100%" />
+					</div>
+					<div class="form-group col-lg-6">
+						<label for="domicilioFiscal">Domicilio Fiscal</label>
+						<input v-model="obj.domicilioFiscal" type="text" placeholder="Máximo 5 caracteres" maxlength="5" class="form-control" style="width:100%" />
+					</div>
+				</div>
+
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+			</div>
+			<script>
+				function convertirAMayusculas(input) {
+					input.value = input.value.toUpperCase();
+				}
+			</script>
+		</div>
+	</div>
+</div>

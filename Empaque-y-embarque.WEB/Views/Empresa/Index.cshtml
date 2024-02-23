@@ -1,0 +1,167 @@
+﻿
+<div id="app">
+    <div class="card mb-4 wow fadeIn">
+        <div class="card-header">
+            <div class="card-card-title">
+
+                <div class="row">
+                    <h1 class="col-2">empresa</h1>
+                    <div class="col-10 text-right">
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="card-body container">
+            <div class="row">
+                <div class="col-12 ">
+
+                    <div class="form-group ">
+                        <label class="label-control">RFC</label>
+                        <input v-model="empresa.rfc" placeholder="Ej. XAXX010101000" class="form-control" maxlength="13">
+                    </div>
+
+                    <div class="form-group ">
+                        <label class="label-control">Nombre</label>
+                        <input v-model="empresa.nombre" placeholder="Ej. ADH sistemas" class="form-control" maxlength="100">
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-12 col-md-6 ">
+                            <label class="label-control">Calle</label>
+                            <input v-model="empresa.calle" placeholder="Ej. reforma" class="form-control">
+                        </div>
+
+                        <div class="form-group col-12 col-md-3">
+                            <label class="label-control">No. Exterior</label>
+                            <input v-model="empresa.numeroExterior" placeholder="Ej. 181" class="form-control" maxlength="5">
+                        </div>
+                        <div class="form-group col-12 col-md-3">
+                            <label class="label-control">Codigo postal</label>
+                            <input v-model="empresa.codigoPostal" placeholder="Ej. 80349" class="form-control" maxlength="5">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group  col-12 col-md-6">
+                            <label class="label-control">Localidad</label>
+                            <input v-model="empresa.localidad" placeholder="Ej. Villa Angel Flores" class="form-control">
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label class="label-control">Municipio</label>
+                            <input v-model="empresa.municipio" placeholder="Ej. Navolato" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class=" form-group col-lg-6">
+                            <label class="label-control">Pais</label>
+                            <select v-model="empresa.cvePais" class="form-control" v-on:change="listarEstado(empresa.cvePais)">
+                                <option value="0" selected>selecciona una opción</option>
+
+                                <option v-for="option in pais" v-bind:value="option.cvePais">
+                                    {{option.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class=" form-group col-lg-6">
+                            <label class="label-control">Estado</label>
+                            <select v-model="empresa.cveEstado" class="form-control">
+                                <option value="0" selected>selecciona una opción</option>
+
+                                <option v-for="option in estado" v-bind:value="option.cveEstado">
+                                    {{option.descripcion}}
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <div class="form-group">
+                       
+                        <a class="btn btn-success text-white" v-on:click="guardar">Guardar</a>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                empresa:
+                {
+
+                },
+                pais: [],
+                estado: []
+
+            },
+            created: function () {
+
+                this.listarPais();
+
+                this.buscar();
+                this.listarEstado(this.empresa.cvePais);
+            },
+
+
+            methods: {
+
+                async buscar() {
+                    var vm = this;
+                    await axios
+                        .get('Empresa/buscar')
+                        .then(response => (vm.empresa = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async guardar() {
+                    var vm = this;
+                    await axios
+                        .post('Empresa/guardar', vm.empresa )
+                        .then(response => (
+                            vm.listar()
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async listarPais() {
+                    var vm = this;
+                    await axios
+                        .get('Empresa/GetPais')
+                        .then(response => (vm.pais = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async listarEstado(cvePais) {
+                    var vm = this;
+                    await axios
+                        .get('Empresa/GetEstado/', { params: { cvePais } })
+                        .then(response => (vm.estado = response.data))
+                        .catch(error => (console.log(error)))
+                },
+            },
+            computed:
+            {
+
+            }
+
+        });
+    </script>
+    }
+
+

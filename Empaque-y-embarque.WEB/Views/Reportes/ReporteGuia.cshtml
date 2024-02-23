@@ -1,0 +1,238 @@
+﻿
+<div id="app">
+    <div class="card mb-4 wow fadeIn">
+        <div class="card-header">
+            <div class="card-card-title">
+                <div class="row">
+                    <h1 class="col-12 col-lg-3">Reporte de guias</h1>
+                    <div class="col-12 col-lg-9 text-right">
+
+                        <button class="btn btn-secondary btn-sm" v-on:click="generarExcel">
+                           
+                            Excel
+                        </button>
+                        <button class="btn btn-secondary btn-sm" v-on:click="generarPDF">
+
+                            PDF
+                        </button>
+                        <button class="btn btn-secondary btn-sm" v-on:click="abrirFiltro">
+                            <i class="align-middle" data-feather="filter"></i>
+                            Filtro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body d-sm-flex justify-content-between">
+            <span v-if="cargando">
+                <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+                Cargando informacion...
+            </span>
+
+
+            <div class="row" style="overflow:auto; width:100%">
+                <table id="tbContenido" class="table" v-if="!cargando">
+                    <thead>
+                        <tr>
+                            <th>
+                                Fecha
+                            </th>
+                            <th>
+                                Guia
+                            </th>
+                            <th>
+                                Producto
+                            </th>
+                            <th>
+                                Total cajas
+                            </th>
+                            <th>
+                                Peso x caja
+                            </th>
+                            <th>
+                                Peso total
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in lista">
+                            <td>
+                                {{item.fecha}}
+                            </td>
+                            <td>
+                                {{item.guia}}
+                            </td>
+                             <td>
+                                {{item.producto}}
+                            </td>
+                            <td class="text-right">
+                                {{item.cajas}}
+                            </td>
+                            <td class="text-right">
+                                {{item.pesoCaja}}
+                            </td>
+                            <td class="text-right">
+                                {{item.pesoTotal}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="modal" id="modalFiltro" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filtro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarFiltro">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-12 col-md-6">
+                            <label class="control-label">Fecha de Incio</label>
+                            <input v-model="filtro.fechaInicio" type="date" class="form-control" />
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label class="control-label">Fecha final</label>
+                            <input v-model="filtro.fechaFinal" type="date" class="form-control" />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="filtrar">Filtrar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarFiltro">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+
+@section Scripts{
+
+    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+
+
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                lista: [],
+                cargando: false,
+                filtro: {
+                    fechaInicio: null,
+                    fechaFinal: null,
+                }
+            },
+            created: function () {
+
+            },
+            methods: {
+
+                async filtrar() {
+                    var vm = this;
+                    vm.cargando = true;
+
+                    var fechaInicio = vm.filtro.fechaInicio;
+                    var fechaFinal = vm.filtro.fechaFinal;
+
+
+
+                    await axios
+                        .get('GetGuias', { params: { fechaInicio, fechaFinal } })
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+
+                    vm.cargando = false;
+                },
+                async generarPDF() {
+                    vm = this;
+
+
+                    var fechaInicio = vm.filtro.fechaInicio;
+                    var fechaFinal = vm.filtro.fechaFinal;
+
+                    
+                    await axios
+                        .get('GetGuias', { params: { fechaInicio, fechaFinal } })
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+
+
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+
+
+
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+
+                    doc.setFontSize(10);
+                    doc.text("FOREVER YOUNG FARMS", 40, 10);
+                    doc.text("FYF2010071IA", 40, 16);
+                    doc.text("Campo 5 Hermanos predio el Patagon, Bachimeto, Navolato, Sin, Mex, CP. 80330", 40, 22);
+                    doc.line(10, 25, 200, 25);
+                    doc.text("Reporte de guias del " + vm.filtro.fechaInicio + " al " + vm.filtro.fechaFinal, 15, 30);
+                    doc.line(10, 33, 200, 33);
+                    
+
+
+                    let info = [];
+
+                    vm.lista.forEach((element, index, array) => {
+                        info.push([element.fecha, element.guia, element.producto, element.cajas, element.pesoCaja, element.pesoTotal])
+
+                    }
+                    );
+
+                    var totalCajas = vm.lista.reduce((sum, el) => sum + el.cajas, 0);
+                    var total = vm.lista.reduce((sum, el) => sum + el.pesoTotal, 0);
+
+                    info.push(["", "", "", totalCajas, "", total])
+
+                    var row = 40;
+
+                    doc.autoTable(
+                        {
+                            head: [['Fecha', 'Guia', 'Producto', 'Cajas', 'peso', 'Peso total']],
+                            body: info,
+                            startY: row,
+                            columnStyles: { 3: { halign: "right" },4: { halign: "right" }, 5: { halign: "right" } },
+                        }
+                    );
+
+                    doc.save("Guias del " + vm.filtro.fechaInicio + " al " + vm.filtro.fechaFinal +".pdf");
+                },
+                generarExcel() {
+                    $("#tbContenido").table2excel({
+                        exclude: ".noExl",
+                        name: "Worksheet Name",
+                        filename: "Reporte de guias",
+                        fileext: ".xls"
+                    });
+                },
+                abrirFiltro() {
+                    $("#modalFiltro").modal("show");
+                },
+                cerrarFiltro() {
+                    $("#modalFiltro").modal("hide");
+                }
+
+            }
+        })
+
+
+    </script>
+}

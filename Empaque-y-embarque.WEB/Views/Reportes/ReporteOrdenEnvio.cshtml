@@ -1,0 +1,244 @@
+﻿<div id="app">
+    <div class="card mb-4 wow fadeIn">
+        <div class="card-header">
+            <div class="card-card-title">
+                <div class="row">
+                    <h1 class="col-12 col-lg-3">Orden de envio</h1>
+                    <div class="col-12 col-lg-9 text-right">
+                        <button class="btn btn-secondary btn-sm" v-on:click="generarExcel">
+                            Excel
+                        </button>
+                        <button class="btn btn-secondary btn-sm" v-on:click="generarPDF">
+
+                            PDF
+                        </button>
+                        <button class="btn btn-secondary btn-sm" v-on:click="abrirFiltro">
+                            <i class="align-middle" data-feather="filter"></i>
+                            Filtro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body d-sm-flex justify-content-between">
+            <span v-if="cargando">
+                <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+                Cargando informacion...
+            </span>
+            <div class="row" style="overflow:auto; width:100%">
+                <table id="tbContenido" class="table" v-if="!cargando">
+                    <thead>
+                        <tr>
+                            <th> Fecha</th>
+                            <th>Manifiesto</th>
+                            <th>Destino</th>
+
+                            <th>
+                                Producto
+                            </th>
+                            <th class="text-right">
+                                Agricultor
+                            </th>
+                            <th class="text-right">
+                                Cantidad
+                            </th>
+                            <th class="text-right">
+                                Total
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in lista">
+                            <td>
+                                {{item.fechaEnvio}}
+                            </td>
+                            <td>
+                                {{item.manifiesto}}
+                            </td>
+                            <td>
+                                {{item.destino}}
+                            </td>
+                            <td>
+                                {{item.producto}}
+                            </td>
+                            <td class="text-right">
+                                {{item.agricultor}}
+                            </td>
+                            <td class="text-right">
+                                {{item.cantidad}}
+                            </td>
+                            <td class="text-right">
+                                {{item.importe}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+    <div class="modal" id="modalFiltro" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filtro</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarFiltro">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="form-group col-12 col-md-6">
+                            <label class="control-label">Fecha de Incio</label>
+                            <input v-model="filtro.fechaInicio" type="date" class="form-control" />
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label class="control-label">Fecha final</label>
+                            <input v-model="filtro.fechaFinal" type="date" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Agricultor</label>
+                        <select class="form-control" v-model="filtro.idAgricultor">
+                            <option value="0">Todos los agricultores...</option>
+                            <option v-for="option in agricultores" v-bind:value="option.idAgricultor">
+                                {{option.nombre}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-on:click="filtrar">Filtrar</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarFiltro">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="//cdn.rawgit.com/rainabba/jquery-table2excel/1.1.0/dist/jquery.table2excel.min.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                lista: [],
+                cargando: false,
+                filtro: {
+                    fechaInicio: null,
+                    fechaFinal: null,
+                    idAgricultor: 0,
+                },
+                agricultores: []
+
+            },
+            created: function () {
+                this.listarAgricultores();
+            },
+            methods: {
+
+                async filtrar() {
+                    var vm = this;
+                    vm.cargando = true;
+                    var fechaInicio = vm.filtro.fechaInicio;
+                    var fechaFinal = vm.filtro.fechaFinal;
+                    var idAgricultor = vm.filtro.idAgricultor;
+                    await axios
+                        .get('GetEnvios', { params: { fechaInicio, fechaFinal, idAgricultor } })
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+                    vm.cargando = false;
+                },
+                async listarAgricultores() {
+                    var vm = this;
+                    await axios
+                        .get('GetAgricultor')
+                        .then(response => (vm.agricultores = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async generarPDF() {
+                    vm = this;
+                    var fechaInicio = vm.filtro.fechaInicio;
+                    var fechaFinal = vm.filtro.fechaFinal;
+                    var idAgricultor = vm.filtro.idAgricultor;
+                    await axios
+                        .get('GetEnvios', { params: { fechaInicio, fechaFinal, idAgricultor } })
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    var img = new Image()
+                    img.src = '../Images/logo.png'
+                    doc.addImage(img, 'JPEG', 10, 4, 20, 20);
+                    doc.setFontSize(10);
+                    doc.text("FOREVER YOUNG FARMS", 40, 10);
+                    doc.text("FYF2010071IA", 40, 16);
+                    doc.text("Campo 5 Hermanos predio el Patagon, Bachimeto, Navolato, Sin, Mex, CP. 80330", 40, 22);
+                    doc.line(10, 25, 200, 25);
+                    doc.text("Reporte de envios del " + vm.filtro.fechaInicio + " al " + vm.filtro.fechaFinal, 15, 30);
+                    doc.line(10, 33, 200, 33);
+                    let info = [];
+
+                    vm.lista.forEach((element, index, array) => {
+                        info.push([element.fechaEnvio, element.manifiesto,element.destino, element.producto, element.cantidad, element.precio, element.importe])
+
+                    }
+                    );
+
+                    var totalImporte = vm.lista.reduce((sum, el) => sum + el.importe, 0);
+                    var totalCantidad = vm.lista.reduce((sum, el) => sum + el.cantidad, 0);
+
+                    info.push(["", "","", "", totalCantidad, "", totalImporte])
+
+                    var row = 40;
+
+                    doc.autoTable(
+                        {
+                            head: [['Fecha', 'Manifiesto','Destino', 'Producto', 'Cantidad', 'Precio', 'Importel']],
+                            body: info,
+                            startY: row,
+                            columnStyles: { 4: { halign: "right" }, 5: { halign: "right" }, 6: { halign: "right" } },
+                        }
+                    );
+
+                    doc.line(20, 246, 100, 246);
+                    doc.text("Lic. SERGIO ANTONIO QUIROZ BELTRAN", 25, 250);
+                    doc.text("Representante legal", 40, 256);
+
+
+                    if (idAgricultor != 0) {
+                        doc.line(120, 246, 180, 246);
+                        doc.text(vm.lista[0].agricultor, 125, 250);
+                        doc.text("Recibido de conformidad", 130, 256);
+
+
+                    }
+
+
+                    doc.text("Nota: Se tomara en cuenta el tipo de cambio al ultimo deposito de FRESHMEX", 10, 276);
+
+
+                    doc.save("Reporte de envios del  " + vm.filtro.fechaInicio + " al " + vm.filtro.fechaFinal + ".pdf");
+                },
+                generarExcel() {
+                    $("#tbContenido").table2excel({
+                        exclude: ".noExl",
+                        name: "Worksheet Name",
+                        filename: "Reporte de envios",
+                        fileext: ".xls"
+                    });
+                },
+                abrirFiltro() {
+                    $("#modalFiltro").modal("show");
+                },
+                cerrarFiltro() {
+                    $("#modalFiltro").modal("hide");
+                }
+
+            }
+        })
+
+
+    </script>
+}

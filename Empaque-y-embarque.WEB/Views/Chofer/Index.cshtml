@@ -1,0 +1,157 @@
+﻿<div id="app">
+    <div class="card mb-4 wow fadeIn">
+
+        <div class="card-header">
+            <div class="card-card-title row">
+                <h1 class="col-12 col-lg-2">Choferes</h1>
+
+                <div class="col-12 col-lg-10 text-right">
+                    <button class="btn btn-success btn-sm" v-on:click="abrirModalNuevo">Nuevo</button>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card-body d-sm-flex justify-content-between">
+            <span v-if="cargando">
+                <img height="35" src="https://i.pinimg.com/originals/4e/b6/97/4eb697b60cf8d2ac12de99e12a444362.gif" />
+                Cargando informacion...
+            </span>
+
+            <table id="tbContenido" class="table" v-if="!cargando">
+                <thead>
+                    <tr>
+                        <th>
+                            Nombre
+                        </th>
+                        <th>
+                            Telefono
+                        </th>
+                        <th>
+                            Linea Transporte
+                        </th>
+
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in lista">
+                        <td> {{item.nombre}}</td>
+                        <td> {{item.telefono}}</td>
+                        <td> {{item.lineas}}</td>
+                        <td class="text-right">
+
+                            <span v-if="item.estaActivo==true">
+                                <button class="btn btn-success btn-sm" v-on:click="cambiarEstado(item.idChofer)">
+                                    <i class=" fa fa-check mr-1"></i>  Activo
+                                </button>
+                            </span>
+                            <span v-else>
+                                <button class="btn btn-danger btn-sm" v-on:click="cambiarEstado(item.idChofer)">
+                                    <i class="fa fa-times mr-1"></i> Cancelado
+                                </button>
+                            </span>
+
+
+                            <button class="btn btn-warning btn-sm" v-on:click="abrirModalModificar(item.idChofer)">
+                                <i class="fas fa-edit mr-1"></i> Modificar
+                            </button>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <partial name="_nuevo" />
+
+</div>
+
+@section Scripts{
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: {
+                cargando: false,
+                lista: [],
+                lineaTransporte:[],
+                obj: {
+                    idChofer: 0,
+                    nombre: "",
+                    telefono:"",
+                    idLineaTransporte:0,
+                    EstaActivo: true,
+                }
+            },
+            created: function () {
+                this.listar();
+                this.listarLineaTransporte();
+            },
+            methods: {
+                async listar() {
+                    var vm = this;
+                    vm.cargando = true;
+                    await axios
+                        .get('Chofer/listar')
+                        .then(response => (vm.lista = response.data))
+                        .catch(error => (console.log(error)))
+                    vm.cargando = false;
+                },
+                async listarLineaTransporte() {
+                    var vm = this;
+                    vm.cargando = true;
+                    await axios
+                        .get('Chofer/GetLinea')
+                        .then(response => (vm.lineaTransporte = response.data))
+                        .catch(error => (console.log(error)))
+                    vm.cargando = false;
+                },
+                async buscar(id) {
+                    var vm = this;
+                    await axios
+                        .get('Chofer/buscar', { params: { id } })
+                        .then(response => (vm.obj = response.data))
+                        .catch(error => (console.log(error)))
+                },
+                async guardar() {
+                    var vm = this;
+                    await axios
+                        .post('Chofer/guardar', vm.obj)
+                        .then(response => (
+                            vm.listar(),
+                            vm.cerrarModalNuevo()
+                        ))
+                        .catch(error => (console.log(error)))
+                },
+                async cambiarEstado(id) {
+                    var vm = this;
+                    await axios
+                        .get('Chofer/cambiarEstado', { params: { id } })
+                        .then(response => (vm.listar()))
+                        .catch(error => (console.log(error)))
+                },
+                limpiar() {
+                    vm = this;
+                    this.obj.idChofer = 0;
+                    this.obj.nombre = "";
+                    this.obj.telefono = "";
+                    this.obj.idLineaTransporte= 0;
+                    this.obj.EstaActivo = true;
+                },
+                abrirModalModificar(id) {
+                    var vm = this;
+                    vm.buscar(id);
+                    $("#modalNuevo").modal("show");
+                },
+                abrirModalNuevo() {
+                    this.limpiar();
+                    $("#modalNuevo").modal("show");
+                },
+                cerrarModalNuevo() {
+                    $("#modalNuevo").modal("hide");
+                },
+            },
+        });
+    </script>
+}

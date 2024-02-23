@@ -1,0 +1,77 @@
+﻿
+<div class="modal" id="modalNuevo" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Destino</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="cerrarModalNuevo">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body ">
+				<div class="form-group col-12">
+					<label for="">Nombre</label>
+					<input v-model="obj.nombre" type="text" placeholder="Nogales" maxlength="30" class="form-control" style="width:100%" />
+				</div>
+
+				<div class="row">
+
+					<div class=" form-group col-lg-6">
+						<label class="label-control">Pais</label>
+						<select v-model="obj.cvePais" class="form-control" v-on:change="listarEstado(obj.cvePais)">
+							<option value="0" selected>selecciona una opción</option>
+
+							<option v-for="option in pais" v-bind:value="option.cvePais">
+								{{option.descripcion}}
+							</option>
+						</select>
+					</div>
+					<div class=" form-group col-lg-6">
+						<label class="label-control">Estado</label>
+						<select v-model="obj.cveEstado" class="form-control">
+							<option value="0" selected>selecciona una opción</option>
+
+							<option v-for="option in estado" v-bind:value="option.cveEstado">
+								{{option.descripcion}}
+							</option>
+						</select>
+					</div>
+					
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-12">
+						<label for="calle">Calle</label>
+						<input v-model="obj.calle" type="text" placeholder="Ej. Josefa Ortiz de Dominguez" class="form-control" style="width:100%" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-6">
+						<label for="numeroExterior">Numero Exterior</label>
+						<input v-model="obj.numeroExterior" type="text" placeholder="maximo 5 caracteres, Ej:12345" maxlength="5" class="form-control" style="width:100%" />
+					</div>
+					<div class="form-group col-lg-6">
+						<label for="localidad">Localidad</label>
+						<input v-model="obj.localidad" type="text" placeholder="Ej. La Vuelta" class="form-control" style="width:100%" />
+					</div>
+					
+				</div>
+				<div class="row">
+					<div class="form-group col-lg-6">
+						<label for="Municipio">Municipio</label>
+						<input v-model="obj.municipio" type="text" placeholder="Ej. Navolato" class="form-control" style="width:100%" />
+					</div>
+					<div class="form-group col-lg-6">
+						<label for="codigoPostal">Codigo Postal</label>
+						<input v-model="obj.codigoPostal" type="text" placeholder="Ej. 80331" maxlength="5" class="form-control" style="width:100%" />
+					</div>
+				</div>
+
+				
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" v-on:click="guardar">Guardar</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal" v-on:click="cerrarModalNuevo">Cerrar</button>
+			</div>
+		</div>
+	</div>
+</div>
