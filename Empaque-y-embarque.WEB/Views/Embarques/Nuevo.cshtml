@@ -757,7 +757,7 @@
                     let info = [];
 
                     vm.manifiesto.detalle.forEach((element, index, array) => {
-                        info.push([element.posicion, element.producto, element.agricultor, element.cantidad, element.kilogramos,element.libras])
+                        info.push([element.posicion, element.producto, element.envase, element.cantidad, element.kilogramos,element.libras])
 
                     }
                     );
@@ -772,7 +772,7 @@
 
                     doc.autoTable(
                         {
-                            head: [['Posicion', 'Producto', 'Agricultor', 'Cantidad', 'Kilogramos','Libras']],
+                            head: [['Posicion', 'Producto', 'Envase', 'Cantidad', 'Kilogramos', 'Libras']],
                             body: info,
                             startY: row,
                             columnStyles: { 3: { halign: "right" }, 4: { halign: "right" }, 5: { halign: "right" } },

@@ -94,3 +94,13 @@ e.IdEmbarque
 ,t.Nombre
 ,ev.Nombre
 ,pr.Calidad
+
+
+
+
+SELECT        ed.IdEmbarque, ed.Posicion, p.Nombre AS Producto, a.Codigo AS Agricultor,t.Nombre as Tamaño, pd.Cantidad, ROUND(pd.Cantidad * p.PesoKg, 2) AS Kilogramos, ROUND(pd.Cantidad * p.Libras, 2) AS Libras
+FROM            dbo.EmbarqueDetalle AS ed INNER JOIN
+                         dbo.PaletDetalle AS pd ON ed.IdPalet = pd.IdPalet INNER JOIN
+                         dbo.Agricultor AS a ON pd.IdAgricultor = a.IdAgricultor INNER JOIN
+                         dbo.Productos AS p ON pd.IdProducto = p.IdProducto
+						 inner join Tamaño t on p.IdTamaño=t.IdTamaño

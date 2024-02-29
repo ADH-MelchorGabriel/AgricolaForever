@@ -19,16 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Facturacion\Facturacion.Servicio\Facturacion.Servicio.csproj" />
-    <ProjectReference Include="..\..\..\SAT\SAT.Data\SAT.Data.csproj" />
-    <ProjectReference Include="..\..\..\seguridad\Seguridad.csproj" />
+    <ProjectReference Include="..\..\Facturacion\Facturacion.Servicio\Facturacion.Servicio.csproj" />
+    <ProjectReference Include="..\..\SAT\SAT.Data\SAT.Data.csproj" />
+    <ProjectReference Include="..\..\Seguridad\Seguridad.csproj" />
     <ProjectReference Include="..\EYE.Servicio\EYE.Servicio.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="SAT.Core">
-      <HintPath>..\..\..\SAT\SAT.Core\bin\Debug\net6.0\SAT.Core.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
