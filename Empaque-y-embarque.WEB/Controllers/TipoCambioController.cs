@@ -1,10 +1,13 @@
 ﻿
 using EYE.Entidades;
 using EYE.Servicio.Data;
+using Facturacion.Servicio;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Sistema.Core.Helppers;
 
 namespace EmpaqueCeresWeb.Web.Controllers
 {
@@ -49,6 +52,29 @@ namespace EmpaqueCeresWeb.Web.Controllers
             
         }
 
+        public async Task<JsonResult> Borrar([FromQuery]int id)
+        {
+            try
+            {
+                var obj = await ceresContext.TiposCambios
+                                   .Where(x => x.IdTipoCambio == id )
+                                   .FirstOrDefaultAsync();
 
+                if (obj == null)
+                    return new JsonResult(new Sistema.Core.Helppers.Respuesta("No exiten datos"));
+
+     
+
+                ceresContext.TiposCambios.Remove(obj);
+                await ceresContext.SaveChangesAsync();
+
+
+                return new JsonResult(new Sistema.Core.Helppers.Respuesta("Se borro correctamente la información...", obj));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new Sistema.Core.Helppers.Respuesta(ex.Message));
+            }
+        }
     }
 }

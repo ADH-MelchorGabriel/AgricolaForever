@@ -36,9 +36,9 @@
 
 
 
-                           @* <button class="btn btn-warning btn-sm" v-on:click="abrirModalModificar(item.idRol)">
-                                <i class="fas fa-edit mr-1"></i> Modificar
-                            </button>*@
+                            <button class="btn btn-danger btn-sm" v-on:click="Borrar(item.idTipoCambio)">
+                                <i class="fas fa-edit mr-1"></i> Borrar
+                            </button>
                         </td>
 
                     </tr>
@@ -54,10 +54,10 @@
 
 
 
-@section Scripts{
+@section Scripts {
 
     <script>
-       
+
 
         var app = new Vue({
             el: '#app',
@@ -69,7 +69,7 @@
                     valor: null
                 },
                 lista: [],
-                cargando:false
+                cargando: false
 
             },
             created: function () {
@@ -99,7 +99,49 @@
                         ))
                         .catch(error => (console.log(error)))
                 },
+                async Borrar(id) {
+                    var vm = this;
+                    try {
+                      
 
+                        const isConfirmed = await new Promise((resolve, reject) => {
+                            swal({
+                                title: "¡Tu registro será eliminado permanentemente!",
+                                text: "¿Quieres seguir con el proceso?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#DD6B55",
+                                confirmButtonText: "¡Eliminar el registro!",
+                                cancelButtonText: "Cancelar",
+                                closeOnConfirm: false,
+                                closeOnCancel: true
+                            }, (isConfirmed) => {
+                                resolve(isConfirmed);
+                            });
+                        });
+
+                        if (isConfirmed) {
+                        
+
+                            const response = await axios.get("tipoCambio/Borrar", { params: { id } });
+                            if (response.data.existeError)
+                                swal("¡Registro eliminado!", response.data.mensaje, "error");
+
+                            else {
+                           
+                                swal("¡Registro eliminado!", "Tu registro ha sido eliminado permanentemente.", "success");                
+                            }
+
+                        } else { //No llega aqui
+                            swal("¡Cancelado!", "Tu registro no ha sido eliminado.", "error");
+                        }
+
+                       
+                    } catch (error) {
+                        toastr.error(error);
+                    }
+                    vm.Listar();
+                },
                 mostrarModalNuevo: function () {
                     $("#modalNuevo").modal('show');
                 },
