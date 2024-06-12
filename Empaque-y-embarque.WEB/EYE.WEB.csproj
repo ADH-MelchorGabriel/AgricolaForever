@@ -8,6 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Reportes\ReporteProductosAgricultor.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Reportes\ReporteProductosAgricultor.cshtml" />
     <None Include="wwwroot\js\site.js" />
   </ItemGroup>
 
@@ -52,6 +57,14 @@
     <Content Update="wwwroot\XMLs\EXP-1.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Reportes\ReporteProductosAgricultor.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Reportes\ReporteProductosAgricultor.cshtml" />
   </ItemGroup>
 
 </Project>

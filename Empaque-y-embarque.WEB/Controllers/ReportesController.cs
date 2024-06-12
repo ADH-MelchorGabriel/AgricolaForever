@@ -32,6 +32,11 @@ namespace Empaque_y_embarque.WEB.Controllers
             return View();
         }
 
+        public IActionResult ReporteProductosAgricultor()
+        {
+            return View();
+        }
+
 
 
         [HttpGet]
@@ -110,6 +115,14 @@ namespace Empaque_y_embarque.WEB.Controllers
 
             return new JsonResult(resultado);
         }
+
+        //[HttpGet]
+        //public async Task<JsonResult> GetProductoAgricutor([FromQuery] DateTime fechaInicio, [FromQuery] DateTime fechaFinal, [FromQuery] int idAgricultor)
+        //{
+
+        //}
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetAgricultor()
