@@ -6,7 +6,8 @@ namespace EYE.Entidades
 {
     [Table("AgenciaAduana")]
     public class AgenciaAduanaEntity
-    {
+    {// quiero probar como funciona el fork
+	    
         [Key]
         public int IdAgenciaAduana { get; set; }
         [Required]
